@@ -1,11 +1,11 @@
 const express = require('express');
 
-const Schemes = require('./scheme-model.js');
+const db = require('./scheme-model.js');
 
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  Schemes.find()
+  db.find()
   .then(schemes => {
     res.json(schemes);
   })
@@ -17,7 +17,7 @@ router.get('/', (req, res) => {
 router.get('/:id', (req, res) => {
   const { id } = req.params;
 
-  Schemes.findById(id)
+  db.findById(id)
   .then(scheme => {
     if (scheme) {
       res.json(scheme);
@@ -33,7 +33,7 @@ router.get('/:id', (req, res) => {
 router.get('/:id/steps', (req, res) => {
   const { id } = req.params;
 
-  Schemes.findSteps(id)
+  db.findSteps(id)
   .then(steps => {
     if (steps.length) {
       res.json(steps);
@@ -49,7 +49,7 @@ router.get('/:id/steps', (req, res) => {
 router.post('/', (req, res) => {
   const schemeData = req.body;
 
-  Schemes.add(schemeData)
+  db.add(schemeData)
   .then(scheme => {
     res.status(201).json(scheme);
   })
@@ -82,10 +82,10 @@ router.put('/:id', (req, res) => {
   const { id } = req.params;
   const changes = req.body;
 
-  Schemes.findById(id)
+  db.findById(id)
   .then(scheme => {
     if (scheme) {
-      Schemes.update(changes, id)
+      db.update(id, changes)
       .then(updatedScheme => {
         res.json(updatedScheme);
       });
@@ -101,7 +101,7 @@ router.put('/:id', (req, res) => {
 router.delete('/:id', (req, res) => {
   const { id } = req.params;
 
-  Schemes.remove(id)
+  db.remove(id)
   .then(deleted => {
     if (deleted) {
       res.json({ removed: deleted });
